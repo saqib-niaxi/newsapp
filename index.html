@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>News App</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .article {
+        border: 1px solid #ddd;
+        padding: 10px;
+        margin-bottom: 20px;
+      }
+      .article h2 {
+        margin-top: 0;
+      }
+      .article p {
+        margin: 10px 0;
+      }
+      nav {
+        background-color: #333;
+        overflow: hidden;
+      }
+      nav a {
+        float: left;
+        display: block;
+        color: white;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+      }
+      nav a:hover {
+        background-color: #ddd;
+        color: black;
+      }
+      .active {
+        background-color: #4caf50;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <nav> -->
+        <h1>This is the News App that shows news day after day and this is in production and will be updated soon thanks. </h1>
+        <p>M SAQIB KHAN </p>
+      <!-- <a href="#" id="all" class="active">All</a>
+      <a href="#" id="business">Business</a>
+      <a href="#" id="entertainment">Entertainment</a>
+      <a href="#" id="health">Health</a>
+      <a href="#" id="science">Science</a>
+      <a href="#" id="sports">Sports</a>
+      <a href="#" id="technology">Technology</a> -->
+    <!-- </nav> -->
+    <h1>Latest News</h1>
+    <div id="articles"></div>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"
+      integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD"
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const API_KEY = "7698789c567e424c83879002986c862e";
+      let category = "general";
+      const endpoint = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
+
+      const articlesDiv = document.getElementById("articles");
+      const navLinks = document.getElementsByTagName("a");
+
+      const getArticles = async () => {
+        try {
+          const response = await fetch(endpoint);
+          const data = await response.json();
+          const articles = data.articles;
+          articlesDiv.innerHTML = articles
+            .map(
+              (article) => `
+                    <div class="article">
+                        <h2>${article.title}</h2>
+                        <img src="${article.urlToImage}" alt="">
+                        <p>${article.description}</p>
+                        <a href="${article.url}" target="_blank">Read More</a>
+                    </div>
+                `
+            )
+            .join("");
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      const setActiveLink = (link) => {
+        for (let i = 0; i < navLinks.length; i++) {
+          navLinks[i].classList.remove("active");
+        }
+        link.classList.add("active");
+      };
+
+      for (let i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener("click", (event) => {
+          event.preventDefault();
+          setActiveLink(event.target);
+          category = event.target.id;
+          endpoint = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${API_KEY}`;
+          getArticles();
+        });
+      }
+
+      getArticles();
+    </script>
+  </body>
+</html>
